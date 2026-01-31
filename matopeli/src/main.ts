@@ -63,7 +63,7 @@ deviceFrame.appendChild(canvas)
 const controlsFooter = document.createElement('div')
 controlsFooter.className = 'controls-footer'
 controlsFooter.textContent =
-  'Arrows / WSD · A: AI demo · Space: Pause · R: Restart · Enter: Start'
+  'Arrows / WASD · I: AI demo · Space: Pause · R: Restart · Enter: Start'
 
 shell.append(hud, deviceFrame)
 app.append(shell, controlsFooter)

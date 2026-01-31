@@ -5,7 +5,7 @@ export interface InputCallbacks {
   onStart(): void
   onRestart(): void
   onPause(): void
-  /** Toggle AI demo mode (when playing). Key A is reserved for this. */
+  /** Toggle AI demo mode (when playing). Key I is reserved for this. */
   onToggleAI?: () => void
 }
 
@@ -18,6 +18,7 @@ const GAME_KEYS = new Set([
   'KeyA',
   'KeyS',
   'KeyD',
+  'KeyI',
   'Enter',
   'Space',
   'KeyR',
@@ -32,6 +33,7 @@ function keyToDirection(e: KeyboardEvent): Direction | null {
     case 'KeyS':
       return 'down'
     case 'ArrowLeft':
+    case 'KeyA':
       return 'left'
     case 'ArrowRight':
     case 'KeyD':
@@ -84,7 +86,7 @@ export function attachInputHandlers(
     if (!GAME_KEYS.has(e.code)) return
     e.preventDefault()
 
-    if (e.code === 'KeyA') {
+    if (e.code === 'KeyI') {
       callbacks.onToggleAI?.()
       return
     }
