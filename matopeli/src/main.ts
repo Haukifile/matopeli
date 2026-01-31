@@ -54,12 +54,17 @@ instructionsEl.textContent = 'Arrow keys / WASD — Space: Pause, R: Restart'
 const aiLabel = document.createElement('span')
 aiLabel.className = 'ai-label'
 
+const aiBtn = document.createElement('button')
+aiBtn.type = 'button'
+aiBtn.className = 'ai-toggle'
+aiBtn.setAttribute('aria-label', 'Kytke AI-demo päälle tai pois')
+
 const themeBtn = document.createElement('button')
 themeBtn.type = 'button'
 themeBtn.className = 'theme-toggle'
 themeBtn.setAttribute('aria-label', 'Vaihda väriteema')
 
-hud.append(scoreEl, highEl, aiLabel, themeBtn, instructionsEl)
+hud.append(scoreEl, highEl, aiLabel, aiBtn, themeBtn, instructionsEl)
 
 const canvas = document.createElement('canvas')
 canvas.id = 'game-canvas'
@@ -139,6 +144,8 @@ app.append(shell, leaderboardView, controlsFooter)
 type AppView = 'game' | 'leaderboard'
 let appView: AppView = 'game'
 let nameSavedForThisGame = false
+/** When true, AI was used this game — do not save high score or leaderboard. */
+let aiWasUsedThisGame = false
 
 function updateLeaderboardList(): void {
   leaderboardList.innerHTML = ''
@@ -190,6 +197,13 @@ themeBtn.addEventListener('click', () => {
   applyTheme(currentTheme === 'nokia' ? 'op' : 'nokia')
 })
 
+aiBtn.addEventListener('click', () => {
+  if (state.mode === 'playing' || state.mode === 'paused') {
+    state = toggleAiMode(state)
+    if (state.aiMode) aiWasUsedThisGame = true
+  }
+})
+
 let state: GameState = createInitialState(getHighScore())
 let lastTime = 0
 let accumulator = 0
@@ -219,6 +233,11 @@ function loop(now: number): void {
   aiLabel.textContent = state.aiMode ? 'AI: on' : ''
   aiLabel.style.display = state.aiMode ? '' : 'none'
 
+  const showAiBtn = state.mode === 'playing' || state.mode === 'paused'
+  aiBtn.style.display = showAiBtn ? '' : 'none'
+  aiBtn.textContent = state.aiMode ? 'AI: päällä' : 'AI: pois'
+  aiBtn.classList.toggle('active', state.aiMode)
+
   const showStart = state.mode === 'start' || state.mode === 'gameover'
   const showRestart = state.mode === 'playing' || state.mode === 'paused' || state.mode === 'gameover'
   startBtn.textContent = state.mode === 'gameover' ? 'Play again' : 'Start'
@@ -236,12 +255,15 @@ function loop(now: number): void {
   }
 
   const showNameForm =
-    state.mode === 'gameover' && !nameSavedForThisGame && appView === 'game'
+    state.mode === 'gameover' &&
+    !nameSavedForThisGame &&
+    !aiWasUsedThisGame &&
+    appView === 'game'
   nameFormContainer.style.display = showNameForm ? '' : 'none'
   nameFormContainer.classList.toggle('name-form-visible', showNameForm)
 
   if (state.mode === 'gameover' && lastMode !== 'gameover') {
-    setHighScore(state.highScore)
+    if (!aiWasUsedThisGame) setHighScore(state.highScore)
   }
   lastMode = state.mode
 
@@ -257,6 +279,7 @@ leaderboardBackBtn.addEventListener('click', () => {
   appView = 'game'
 })
 function submitNameToLeaderboard(): void {
+  if (aiWasUsedThisGame) return
   addLeaderboardEntry(nameFormInput.value.trim() || 'Anonyymi', state.score)
   nameSavedForThisGame = true
   nameFormInput.value = ''
@@ -274,11 +297,13 @@ attachInputHandlers(shell, {
   onStart() {
     if (state.mode === 'start' || state.mode === 'gameover') {
       nameSavedForThisGame = false
+      aiWasUsedThisGame = false
       state = startGame(state)
     }
   },
   onRestart() {
     nameSavedForThisGame = false
+    aiWasUsedThisGame = false
     state = startGame(state)
   },
   onPause() {
@@ -289,6 +314,7 @@ attachInputHandlers(shell, {
   onToggleAI() {
     if (state.mode === 'playing' || state.mode === 'paused') {
       state = toggleAiMode(state)
+      if (state.aiMode) aiWasUsedThisGame = true
     }
   },
 })
@@ -298,10 +324,12 @@ shell.appendChild(actionButtons)
 startBtn.addEventListener('click', () => {
   if (state.mode === 'start' || state.mode === 'gameover') {
     nameSavedForThisGame = false
+    aiWasUsedThisGame = false
     state = startGame(state)
   }
 })
 restartBtn.addEventListener('click', () => {
   nameSavedForThisGame = false
+  aiWasUsedThisGame = false
   state = startGame(state)
 })

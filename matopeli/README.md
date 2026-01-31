@@ -23,13 +23,13 @@ npm run preview
 | Action   | Key(s)                    | Touch              |
 | -------- | ------------------------- | ------------------ |
 | Move     | Arrow keys or WASD        | On-screen D-pad    |
-| AI demo  | I (when playing)          | —                  |
+| AI demo  | I (when playing)          | AI button (HUD)     |
 | Pause    | Space (when playing)      | —                  |
 | Restart  | R (any mode)              | Restart button     |
 | Start    | Enter (start screen or game over) | Start / Play again button |
 | Theme    | —                         | Theme button (HUD) |
 
-Key **I** toggles AI demo mode when playing (does not affect movement). **Väriteema:** The theme button in the HUD switches between Nokia-style (default) and OP Pohjola colour scheme; the choice is saved in `localStorage`. Movement does not allow instant reverse (e.g. moving right you cannot go left in one step). On mobile, use the D-pad buttons below the canvas and the Start / Play again / Restart buttons. Control hints are shown in the footer below the game.
+Key **I** toggles AI demo mode when playing (does not affect movement). If AI mode was used during a game, that game’s score is **not** saved to high score or the leaderboard (anti-cheat). **Väriteema:** The theme button in the HUD switches between Nokia-style (default) and OP Pohjola colour scheme; the choice is saved in `localStorage`. Movement does not allow instant reverse (e.g. moving right you cannot go left in one step). On mobile, use the D-pad buttons below the canvas and the Start / Play again / Restart buttons. Control hints are shown in the footer below the game.
 
 ## AI demo mode
 
@@ -69,6 +69,7 @@ Output folder: `dist`
 
 ## CHANGELOG
 
+- **AI button (MAT-2)**: HUD button to toggle AI demo on/off; visible only when playing or paused; works with touch and key I. Button shows "AI: päällä" / "AI: pois". If AI was used during a game, high score and leaderboard are not updated for that game (name form hidden on game over).
 - **Pistelista (leaderboard)**: After game over you can enter your name and save your score. Top 10 list is stored in `localStorage`. Start screen has a "Pistelista" button to view the list; leaderboard view has a "Takaisin" button to return. Nokia/retro styling for the list and name form.
 - **Väriteema (theme toggle)**: Nokia (default) and OP Pohjola colour schemes. Theme button in the HUD toggles between them; selection is stored in `localStorage`.
 - **Mobile Start/Restart buttons**: Added Start, Play again, and Restart on-screen buttons for touch devices. Start appears on the start screen; Play again appears on game over; Restart appears when playing or paused.

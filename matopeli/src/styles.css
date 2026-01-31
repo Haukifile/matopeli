@@ -121,6 +121,34 @@ body {
   background-color: var(--lcd-mid);
 }
 
+/* AI toggle button in HUD */
+.ai-toggle {
+  min-width: 44px;
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--lcd-dark);
+  background-color: var(--lcd-pale);
+  border: 2px solid var(--bezel);
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ai-toggle:hover {
+  background-color: var(--lcd-light);
+}
+
+.ai-toggle:active {
+  background-color: var(--lcd-mid);
+}
+
+.ai-toggle.active {
+  background-color: var(--lcd-light);
+}
+
 /* Device frame around canvas — screen bezel + scanlines */
 .device-frame {
   position: relative;
