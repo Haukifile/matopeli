@@ -1,6 +1,7 @@
 /* Nokia-style retro LCD look — monochrome greenish, thick border */
 
-:root {
+:root,
+[data-theme="nokia"] {
   --lcd-dark: #0f380f;
   --lcd-mid: #306230;
   --lcd-light: #9bbc0f;
@@ -9,6 +10,23 @@
   font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono",
     "Courier New", monospace;
   font-synthesis: none;
+}
+
+/* OP Pohjola oranssi-valkoinen (oranssi #f25c19) */
+[data-theme="op"] {
+  --lcd-dark: #1a1a1a;   /* text on light bg */
+  --lcd-mid: #fff5f0;
+  --lcd-light: #f25c19;
+  --lcd-pale: #ffefe8;
+  --bezel: #d94e14;
+}
+
+[data-theme="op"] body {
+  background-color: #ffffff;
+}
+
+[data-theme="op"] .controls-footer {
+  color: var(--lcd-dark);
 }
 
 * {
@@ -77,6 +95,30 @@ body {
   color: var(--lcd-dark);
   opacity: 0.9;
   text-align: center;
+}
+
+/* Theme toggle button in HUD */
+.theme-toggle {
+  min-width: 44px;
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--lcd-dark);
+  background-color: var(--lcd-pale);
+  border: 2px solid var(--bezel);
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.theme-toggle:hover {
+  background-color: var(--lcd-light);
+}
+
+.theme-toggle:active {
+  background-color: var(--lcd-mid);
 }
 
 /* Device frame around canvas — screen bezel + scanlines */

@@ -27,8 +27,9 @@ npm run preview
 | Pause    | Space (when playing)      | —                  |
 | Restart  | R (any mode)              | Restart button     |
 | Start    | Enter (start screen or game over) | Start / Play again button |
+| Theme    | —                         | Theme button (HUD) |
 
-Key **I** toggles AI demo mode when playing (does not affect movement). Movement does not allow instant reverse (e.g. moving right you cannot go left in one step). On mobile, use the D-pad buttons below the canvas and the Start / Play again / Restart buttons. Control hints are shown in the footer below the game.
+Key **I** toggles AI demo mode when playing (does not affect movement). **Väriteema:** The theme button in the HUD switches between Nokia-style (default) and OP Pohjola colour scheme; the choice is saved in `localStorage`. Movement does not allow instant reverse (e.g. moving right you cannot go left in one step). On mobile, use the D-pad buttons below the canvas and the Start / Play again / Restart buttons. Control hints are shown in the footer below the game.
 
 ## AI demo mode
 
@@ -64,6 +65,7 @@ Output folder: `dist`
 
 ## CHANGELOG
 
+- **Väriteema (theme toggle)**: Nokia (default) and OP Pohjola colour schemes. Theme button in the HUD toggles between them; selection is stored in `localStorage`.
 - **Mobile Start/Restart buttons**: Added Start, Play again, and Restart on-screen buttons for touch devices. Start appears on the start screen; Play again appears on game over; Restart appears when playing or paused.
 - **GitHub Pages**: Added `base: '/matopeli/'` to `vite.config.ts` and `.github/workflows/deploy.yml` for automated deployment. Configure repo Settings → Pages → Source: GitHub Actions.
 - **Deployment**: Added `vite.config.ts` with explicit `outDir: 'dist'`. Added DEPLOYMENT section for GitHub Pages, Netlify, and Cloudflare Pages.

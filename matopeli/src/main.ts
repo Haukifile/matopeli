@@ -11,14 +11,12 @@ import {
 import { chooseDirection } from './game/ai.ts'
 import { render } from './game/render.ts'
 import { attachInputHandlers } from './game/input.ts'
-import { getHighScore, setHighScore } from './game/storage.ts'
+import { getHighScore, setHighScore, getTheme, setTheme } from './game/storage.ts'
 import {
   GRID_W,
   GRID_H,
-  COLOR_BG,
-  COLOR_SNAKE,
-  COLOR_FOOD,
-  COLOR_TEXT,
+  getThemeColors,
+  type ThemeId,
 } from './game/config.ts'
 
 const GAME_WIDTH = 320
@@ -49,7 +47,12 @@ instructionsEl.textContent = 'Arrow keys / WASD — Space: Pause, R: Restart'
 const aiLabel = document.createElement('span')
 aiLabel.className = 'ai-label'
 
-hud.append(scoreEl, highEl, aiLabel, instructionsEl)
+const themeBtn = document.createElement('button')
+themeBtn.type = 'button'
+themeBtn.className = 'theme-toggle'
+themeBtn.setAttribute('aria-label', 'Vaihda väriteema')
+
+hud.append(scoreEl, highEl, aiLabel, themeBtn, instructionsEl)
 
 const canvas = document.createElement('canvas')
 canvas.id = 'game-canvas'
@@ -87,14 +90,36 @@ shell.append(hud, deviceFrame)
 app.append(shell, controlsFooter)
 
 const ctx = canvas.getContext('2d')!
+
+let currentTheme: ThemeId = getTheme()
+document.documentElement.setAttribute('data-theme', currentTheme)
+
+const colors = getThemeColors(currentTheme)
 const renderConfig = {
   GRID_W,
   GRID_H,
-  COLOR_BG,
-  COLOR_SNAKE,
-  COLOR_FOOD,
-  COLOR_TEXT,
+  COLOR_BG: colors.COLOR_BG,
+  COLOR_SNAKE: colors.COLOR_SNAKE,
+  COLOR_FOOD: colors.COLOR_FOOD,
+  COLOR_TEXT: colors.COLOR_TEXT,
 }
+
+function applyTheme(theme: ThemeId): void {
+  currentTheme = theme
+  document.documentElement.setAttribute('data-theme', theme)
+  setTheme(theme)
+  const c = getThemeColors(theme)
+  renderConfig.COLOR_BG = c.COLOR_BG
+  renderConfig.COLOR_SNAKE = c.COLOR_SNAKE
+  renderConfig.COLOR_FOOD = c.COLOR_FOOD
+  renderConfig.COLOR_TEXT = c.COLOR_TEXT
+  themeBtn.textContent = theme === 'nokia' ? 'OP-värit' : 'Nokia-värit'
+}
+
+themeBtn.textContent = currentTheme === 'nokia' ? 'OP-värit' : 'Nokia-värit'
+themeBtn.addEventListener('click', () => {
+  applyTheme(currentTheme === 'nokia' ? 'op' : 'nokia')
+})
 
 let state: GameState = createInitialState(getHighScore())
 let lastTime = 0
