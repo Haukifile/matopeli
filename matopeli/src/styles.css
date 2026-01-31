@@ -168,6 +168,39 @@ body {
   grid-row: 2;
 }
 
+/* Start / Restart buttons for mobile */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.action-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--lcd-dark);
+  background-color: var(--lcd-pale);
+  border: 3px solid var(--bezel);
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.action-btn:hover {
+  background-color: var(--lcd-light);
+}
+
+.action-btn:active {
+  background-color: var(--lcd-mid);
+}
+
 /* Controls help footer — below game shell */
 .controls-footer {
   margin-top: 1rem;

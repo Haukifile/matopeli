@@ -25,10 +25,10 @@ npm run preview
 | Move     | Arrow keys or WASD        | On-screen D-pad    |
 | AI demo  | I (when playing)          | —                  |
 | Pause    | Space (when playing)      | —                  |
-| Restart  | R (any mode)              | —                  |
-| Start    | Enter (start screen or game over) | —          |
+| Restart  | R (any mode)              | Restart button     |
+| Start    | Enter (start screen or game over) | Start / Play again button |
 
-Key **I** toggles AI demo mode when playing (does not affect movement). Movement does not allow instant reverse (e.g. moving right you cannot go left in one step). On mobile, use the D-pad buttons below the canvas. Control hints are shown in the footer below the game.
+Key **I** toggles AI demo mode when playing (does not affect movement). Movement does not allow instant reverse (e.g. moving right you cannot go left in one step). On mobile, use the D-pad buttons below the canvas and the Start / Play again / Restart buttons. Control hints are shown in the footer below the game.
 
 ## AI demo mode
 
@@ -64,6 +64,7 @@ Output folder: `dist`
 
 ## CHANGELOG
 
+- **Mobile Start/Restart buttons**: Added Start, Play again, and Restart on-screen buttons for touch devices. Start appears on the start screen; Play again appears on game over; Restart appears when playing or paused.
 - **GitHub Pages**: Added `base: '/matopeli/'` to `vite.config.ts` and `.github/workflows/deploy.yml` for automated deployment. Configure repo Settings → Pages → Source: GitHub Actions.
 - **Deployment**: Added `vite.config.ts` with explicit `outDir: 'dist'`. Added DEPLOYMENT section for GitHub Pages, Netlify, and Cloudflare Pages.
 - **AI demo key**: AI demo toggle changed from **A** to **I** so WASD movement is unaffected.

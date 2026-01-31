@@ -60,6 +60,24 @@ const deviceFrame = document.createElement('div')
 deviceFrame.className = 'device-frame'
 deviceFrame.appendChild(canvas)
 
+const actionButtons = document.createElement('div')
+actionButtons.className = 'action-buttons'
+actionButtons.setAttribute('aria-label', 'Game actions')
+
+const startBtn = document.createElement('button')
+startBtn.type = 'button'
+startBtn.className = 'action-btn action-btn-start'
+startBtn.textContent = 'Start'
+startBtn.setAttribute('aria-label', 'Start game')
+
+const restartBtn = document.createElement('button')
+restartBtn.type = 'button'
+restartBtn.className = 'action-btn action-btn-restart'
+restartBtn.textContent = 'Restart'
+restartBtn.setAttribute('aria-label', 'Restart game')
+
+actionButtons.append(startBtn, restartBtn)
+
 const controlsFooter = document.createElement('div')
 controlsFooter.className = 'controls-footer'
 controlsFooter.textContent =
@@ -107,6 +125,12 @@ function loop(now: number): void {
   aiLabel.textContent = state.aiMode ? 'AI: on' : ''
   aiLabel.style.display = state.aiMode ? '' : 'none'
 
+  const showStart = state.mode === 'start' || state.mode === 'gameover'
+  const showRestart = state.mode === 'playing' || state.mode === 'paused' || state.mode === 'gameover'
+  startBtn.textContent = state.mode === 'gameover' ? 'Play again' : 'Start'
+  startBtn.style.display = showStart ? '' : 'none'
+  restartBtn.style.display = showRestart ? '' : 'none'
+
   if (state.mode === 'gameover' && lastMode !== 'gameover') {
     setHighScore(state.highScore)
   }
@@ -139,4 +163,15 @@ attachInputHandlers(shell, {
       state = toggleAiMode(state)
     }
   },
+})
+
+shell.appendChild(actionButtons)
+
+startBtn.addEventListener('click', () => {
+  if (state.mode === 'start' || state.mode === 'gameover') {
+    state = startGame(state)
+  }
+})
+restartBtn.addEventListener('click', () => {
+  state = startGame(state)
 })
