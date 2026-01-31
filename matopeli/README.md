@@ -47,9 +47,10 @@ Output folder: `dist`
 
 ### GitHub Pages
 
-1. In repo Settings → Pages, set Source to "GitHub Actions" or deploy the `dist` folder.
-2. For a **project site** (`username.github.io/matopeli`): add `base: '/matopeli/'` to `vite.config.ts` before building (replace `matopeli` with your repo name).
-3. Build: `npm run build`, then publish the `dist` folder.
+- **base:** `vite.config.ts` includes `base: '/matopeli/'` for project sites at `username.github.io/matopeli`.
+- **GitHub Actions:** A workflow in `.github/workflows/deploy.yml` builds and deploys on push to `main`.
+- **Setup:** In repo Settings → Pages, set Source to "GitHub Actions".
+- **URL:** `https://<your-username>.github.io/matopeli/`
 
 ### Netlify
 
@@ -63,6 +64,7 @@ Output folder: `dist`
 
 ## CHANGELOG
 
+- **GitHub Pages**: Added `base: '/matopeli/'` to `vite.config.ts` and `.github/workflows/deploy.yml` for automated deployment. Configure repo Settings → Pages → Source: GitHub Actions.
 - **Deployment**: Added `vite.config.ts` with explicit `outDir: 'dist'`. Added DEPLOYMENT section for GitHub Pages, Netlify, and Cloudflare Pages.
 - **AI demo key**: AI demo toggle changed from **A** to **I** so WASD movement is unaffected.
 - **AI demo mode**: Optional toggle with **I** when playing. When on, the engine chooses direction each tick via BFS pathfinding in `src/game/ai.ts` (shortest path to food avoiding snake cells; safe-direction fallback if no path). README documents that the AI is algorithmic (not ML).
