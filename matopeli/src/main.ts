@@ -9,6 +9,7 @@ import {
 } from './game/engine.ts'
 import { render } from './game/render.ts'
 import { attachInputHandlers } from './game/input.ts'
+import { getHighScore, setHighScore } from './game/storage.ts'
 import {
   GRID_W,
   GRID_H,
@@ -20,14 +21,9 @@ import {
 
 const GAME_WIDTH = 320
 const GAME_HEIGHT = 320
-const HIGH_SCORE_KEY = 'matopeli-highscore'
 
-function getStoredHighScore(): number {
-  const s = localStorage.getItem(HIGH_SCORE_KEY)
-  if (s === null) return 0
-  const n = parseInt(s, 10)
-  return Number.isNaN(n) ? 0 : n
-}
+/** Max game steps per frame to avoid spiral of death when tab was backgrounded. */
+const MAX_STEPS_PER_FRAME = 5
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 const shell = document.createElement('div')
@@ -68,35 +64,39 @@ const renderConfig = {
   COLOR_TEXT,
 }
 
-let state: GameState = createInitialState(getStoredHighScore())
-let scheduledTickRate = state.tickRate
-let intervalId: ReturnType<typeof setInterval>
+let state: GameState = createInitialState(getHighScore())
+let lastTime = 0
+let accumulator = 0
+let lastMode: GameState['mode'] = state.mode
 
-function tick(): void {
+function loop(now: number): void {
+  const dt = lastTime === 0 ? 0 : (now - lastTime) / 1000
+  lastTime = now
+
   if (state.mode === 'playing') {
-    state = step(state)
+    accumulator += dt
+    const stepDuration = 1 / state.tickRate
+    let steps = 0
+    while (accumulator >= stepDuration && steps < MAX_STEPS_PER_FRAME) {
+      state = step(state)
+      accumulator -= stepDuration
+      steps++
+    }
   }
+
   render(ctx, state, renderConfig, canvas.width, canvas.height)
   scoreEl.textContent = `Score: ${state.score}`
   highEl.textContent = `High: ${state.highScore}`
-  if (state.mode === 'gameover') {
-    localStorage.setItem(HIGH_SCORE_KEY, String(state.highScore))
+
+  if (state.mode === 'gameover' && lastMode !== 'gameover') {
+    setHighScore(state.highScore)
   }
-  if (state.tickRate !== scheduledTickRate) {
-    scheduledTickRate = state.tickRate
-    clearInterval(intervalId)
-    intervalId = setInterval(tick, 1000 / state.tickRate)
-  }
+  lastMode = state.mode
+
+  requestAnimationFrame(loop)
 }
 
-function rescheduleTick(): void {
-  clearInterval(intervalId)
-  scheduledTickRate = state.tickRate
-  intervalId = setInterval(tick, 1000 / state.tickRate)
-}
-
-rescheduleTick()
-tick()
+requestAnimationFrame(loop)
 
 attachInputHandlers(shell, {
   onDirection(dir) {
@@ -105,12 +105,10 @@ attachInputHandlers(shell, {
   onStart() {
     if (state.mode === 'start' || state.mode === 'gameover') {
       state = startGame(state)
-      rescheduleTick()
     }
   },
   onRestart() {
     state = startGame(state)
-    rescheduleTick()
   },
   onPause() {
     if (state.mode === 'playing' || state.mode === 'paused') {
