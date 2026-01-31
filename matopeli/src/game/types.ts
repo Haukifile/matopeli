@@ -19,4 +19,6 @@ export interface GameState {
   mode: GameMode
   /** Ticks per second. */
   tickRate: number
+  /** When true, direction is chosen by AI each tick (demo mode). */
+  aiMode: boolean
 }

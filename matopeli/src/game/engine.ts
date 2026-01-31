@@ -39,6 +39,7 @@ export function createInitialState(highScore: number): GameState {
     highScore,
     mode: 'start',
     tickRate: INITIAL_TICK_RATE,
+    aiMode: false,
   }
 }
 
@@ -61,7 +62,13 @@ export function startGame(state: GameState): GameState {
     food,
     score: 0,
     tickRate: INITIAL_TICK_RATE,
+    aiMode: false,
   }
+}
+
+export function toggleAiMode(state: GameState): GameState {
+  if (state.mode !== 'playing' && state.mode !== 'paused') return state
+  return { ...state, aiMode: !state.aiMode }
 }
 
 export function togglePause(state: GameState): GameState {

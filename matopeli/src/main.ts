@@ -6,7 +6,9 @@ import {
   step,
   setQueuedDirection,
   togglePause,
+  toggleAiMode,
 } from './game/engine.ts'
+import { chooseDirection } from './game/ai.ts'
 import { render } from './game/render.ts'
 import { attachInputHandlers } from './game/input.ts'
 import { getHighScore, setHighScore } from './game/storage.ts'
@@ -44,15 +46,27 @@ const instructionsEl = document.createElement('div')
 instructionsEl.className = 'instructions'
 instructionsEl.textContent = 'Arrow keys / WASD — Space: Pause, R: Restart'
 
-hud.append(scoreEl, highEl, instructionsEl)
+const aiLabel = document.createElement('span')
+aiLabel.className = 'ai-label'
+
+hud.append(scoreEl, highEl, aiLabel, instructionsEl)
 
 const canvas = document.createElement('canvas')
 canvas.id = 'game-canvas'
 canvas.width = GAME_WIDTH
 canvas.height = GAME_HEIGHT
 
-shell.append(hud, canvas)
-app.append(shell)
+const deviceFrame = document.createElement('div')
+deviceFrame.className = 'device-frame'
+deviceFrame.appendChild(canvas)
+
+const controlsFooter = document.createElement('div')
+controlsFooter.className = 'controls-footer'
+controlsFooter.textContent =
+  'Arrows / WSD · A: AI demo · Space: Pause · R: Restart · Enter: Start'
+
+shell.append(hud, deviceFrame)
+app.append(shell, controlsFooter)
 
 const ctx = canvas.getContext('2d')!
 const renderConfig = {
@@ -78,6 +92,9 @@ function loop(now: number): void {
     const stepDuration = 1 / state.tickRate
     let steps = 0
     while (accumulator >= stepDuration && steps < MAX_STEPS_PER_FRAME) {
+      if (state.aiMode) {
+        state = setQueuedDirection(state, chooseDirection(state))
+      }
       state = step(state)
       accumulator -= stepDuration
       steps++
@@ -87,6 +104,8 @@ function loop(now: number): void {
   render(ctx, state, renderConfig, canvas.width, canvas.height)
   scoreEl.textContent = `Score: ${state.score}`
   highEl.textContent = `High: ${state.highScore}`
+  aiLabel.textContent = state.aiMode ? 'AI: on' : ''
+  aiLabel.style.display = state.aiMode ? '' : 'none'
 
   if (state.mode === 'gameover' && lastMode !== 'gameover') {
     setHighScore(state.highScore)
@@ -113,6 +132,11 @@ attachInputHandlers(shell, {
   onPause() {
     if (state.mode === 'playing' || state.mode === 'paused') {
       state = togglePause(state)
+    }
+  },
+  onToggleAI() {
+    if (state.mode === 'playing' || state.mode === 'paused') {
+      state = toggleAiMode(state)
     }
   },
 })

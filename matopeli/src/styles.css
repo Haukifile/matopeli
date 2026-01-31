@@ -6,12 +6,18 @@
   --lcd-light: #9bbc0f;
   --lcd-pale: #8bac0f;
   --bezel: #1a2f1a;
-  font-family: "Courier New", Courier, monospace;
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono",
+    "Courier New", monospace;
   font-synthesis: none;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
 
 body {
@@ -27,9 +33,12 @@ body {
 
 #app {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .game-shell {
@@ -38,6 +47,7 @@ body {
   border-radius: 8px;
   padding: 12px;
   max-width: min(90vmin, 520px);
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -69,10 +79,36 @@ body {
   text-align: center;
 }
 
+/* Device frame around canvas — screen bezel + scanlines */
+.device-frame {
+  position: relative;
+  width: 100%;
+  max-width: min(90vmin, 480px);
+  border: 8px solid var(--bezel);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.2),
+    0 0 12px rgba(155, 188, 15, 0.08);
+}
+
+.device-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.08;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 1px,
+    rgba(0, 0, 0, 0.4) 2px
+  );
+}
+
 #game-canvas {
   display: block;
   width: 100%;
-  max-width: min(90vmin, 480px);
   height: auto;
   aspect-ratio: 1;
   background-color: var(--lcd-pale);
@@ -87,6 +123,7 @@ body {
   grid-template-rows: 1fr 1fr 1fr;
   gap: 6px;
   max-width: min(90vmin, 180px);
+  width: 100%;
   margin-top: 4px;
 }
 
@@ -129,4 +166,15 @@ body {
 .dpad-right {
   grid-column: 3;
   grid-row: 2;
+}
+
+/* Controls help footer — below game shell */
+.controls-footer {
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+  font-size: 0.7rem;
+  color: var(--lcd-mid);
+  text-align: center;
+  max-width: 100%;
+  word-break: break-word;
 }
