@@ -243,6 +243,101 @@ body {
   background-color: var(--lcd-mid);
 }
 
+/* Leaderboard view — replaces game shell when visible */
+.leaderboard-view {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: min(90vmin, 520px);
+  padding: 12px;
+  background-color: var(--lcd-mid);
+  border: 16px solid var(--bezel);
+  border-radius: 8px;
+}
+
+.leaderboard-view.leaderboard-view-visible {
+  display: flex;
+}
+
+.leaderboard-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--lcd-dark);
+}
+
+.leaderboard-list {
+  margin: 0;
+  padding: 0 0 0 1.2em;
+  width: 100%;
+  font-size: 0.9rem;
+  color: var(--lcd-dark);
+  font-weight: 600;
+}
+
+.leaderboard-item {
+  margin: 4px 0;
+}
+
+.leaderboard-empty {
+  list-style: none;
+  margin-left: -1.2em;
+  color: var(--lcd-dark);
+  opacity: 0.9;
+}
+
+/* Name form (game over — save score to leaderboard) */
+.name-form-container {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  margin-top: 4px;
+  width: 100%;
+  background-color: var(--lcd-mid);
+  border: 2px solid var(--bezel);
+  border-radius: 6px;
+}
+
+.name-form-container.name-form-visible {
+  display: flex;
+}
+
+.name-form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--lcd-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.name-form-input {
+  width: 100%;
+  max-width: 200px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--lcd-dark);
+  background-color: var(--lcd-pale);
+  border: 2px solid var(--bezel);
+  border-radius: 6px;
+}
+
+.name-form-input::placeholder {
+  color: var(--lcd-dark);
+  opacity: 0.6;
+}
+
+.name-form-submit {
+  min-width: 100px;
+}
+
 /* Controls help footer — below game shell */
 .controls-footer {
   margin-top: 1rem;

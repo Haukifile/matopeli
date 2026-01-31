@@ -1,0 +1,42 @@
+---
+description: Jira usage rules for Matopeli (MAT project)
+alwaysApply: true
+---
+
+- Default Jira project key is `MAT`. If the user mentions an issue without a project key (e.g. `-123`), assume `MAT-123` unless they specify another project.
+
+- When the user mentions a Jira issue key (e.g. `MAT-123`) or says “Jira issue X”:
+  - Use the user-Atlassian-MCP-Server Jira tools to fetch the issue (e.g. `getJiraIssue`) before planning or coding.
+  - always use cloudId: jukkamoilanen.atlassian.net
+  - Summarize the issue (title, description, key acceptance criteria) back to the user.
+  - Cross-check the request with `README.md` for context, then propose an implementation plan.
+
+- When implementing a Jira issue:
+  - Follow `.cursor/commands/implement-jira-task.md`:
+    - Restate the Jira task and acceptance criteria in your own words.
+    - Identify which files/systems will change via search.
+    - Propose a short plan (max 6 steps) before edits.
+    - Implement with small, incremental diffs that match existing patterns.
+  - If Jira and the GDD/README conflict, prefer the Jira issue but clearly call out the conflict in the explanation and avoid silently rewriting the GDD.
+
+- When the user asks about “open Jira work”, “next Jira issues to implement”, or similar:
+  - Use `searchJiraIssuesUsingJql` (project = `MAT`) to find relevant issues (e.g. open/in-progress ordered by priority or rank).
+  - Summarize the top results and, if requested, propose an implementation order.
+
+- Creating or editing Jira issues:
+  - Use `createJiraIssue` only when the user explicitly asks to create a ticket.
+  - Use `editJiraIssue` only when the user explicitly asks to update an existing ticket’s fields or description.
+  - Do not transition or otherwise change issue workflow state unless requested.
+
+- Commenting and worklogs:
+  - After completing work for a specific issue, if the user wants Jira updated:
+    - Use `addCommentToJiraIssue` to post:
+      - A short summary of code changes.
+      - Key files touched.
+      - Manual test steps.
+      - A commit placeholder (e.g. `Commit: <fill in hash>`).
+  - Only use `addWorklogToJiraIssue` if the user explicitly asks to log time.
+
+- If Jira MCP calls fail (auth, network, or schema issues):
+  - Clearly state that Jira data could not be fetched.
+  - Fall back to local docs (`README.md`) and the codebase only, and continue with the best-effort plan.

@@ -41,6 +41,10 @@ AI demo mode is **algorithmic (not machine learning)**. When toggled on with **I
 - **Speed**: Game runs at a fixed tick rate (ticks per second). Every 5 foods eaten, the tick rate increases by 1, from 8 TPS up to a maximum of 20 TPS (see `INITIAL_TICK_RATE`, `SPEEDUP_EVERY`, `MAX_TICK_RATE` in `src/game/config.ts`).
 - **High score**: Stored in `localStorage` and restored when you return. Persisted when you game over.
 
+## Pistelista (leaderboard)
+
+When the game ends (game over), you can enter your name and save your score to the leaderboard. The top 10 entries (name + score) are stored in `localStorage` and shown in a dedicated view. On the **start screen**, use the **Pistelista** button to open the top 10 list; use **Takaisin** (Back) to return to the game. The name is asked only once per game (if you click "Play again" without reloading, the form is not shown again for that session).
+
 ## DEPLOYMENT
 
 Build command: `npm run build`  
@@ -65,6 +69,7 @@ Output folder: `dist`
 
 ## CHANGELOG
 
+- **Pistelista (leaderboard)**: After game over you can enter your name and save your score. Top 10 list is stored in `localStorage`. Start screen has a "Pistelista" button to view the list; leaderboard view has a "Takaisin" button to return. Nokia/retro styling for the list and name form.
 - **Väriteema (theme toggle)**: Nokia (default) and OP Pohjola colour schemes. Theme button in the HUD toggles between them; selection is stored in `localStorage`.
 - **Mobile Start/Restart buttons**: Added Start, Play again, and Restart on-screen buttons for touch devices. Start appears on the start screen; Play again appears on game over; Restart appears when playing or paused.
 - **GitHub Pages**: Added `base: '/matopeli/'` to `vite.config.ts` and `.github/workflows/deploy.yml` for automated deployment. Configure repo Settings → Pages → Source: GitHub Actions.

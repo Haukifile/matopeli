@@ -11,7 +11,14 @@ import {
 import { chooseDirection } from './game/ai.ts'
 import { render } from './game/render.ts'
 import { attachInputHandlers } from './game/input.ts'
-import { getHighScore, setHighScore, getTheme, setTheme } from './game/storage.ts'
+import {
+  getHighScore,
+  setHighScore,
+  getTheme,
+  setTheme,
+  getLeaderboard,
+  addLeaderboardEntry,
+} from './game/storage.ts'
 import {
   GRID_W,
   GRID_H,
@@ -79,15 +86,77 @@ restartBtn.className = 'action-btn action-btn-restart'
 restartBtn.textContent = 'Restart'
 restartBtn.setAttribute('aria-label', 'Restart game')
 
-actionButtons.append(startBtn, restartBtn)
+const leaderboardBtn = document.createElement('button')
+leaderboardBtn.type = 'button'
+leaderboardBtn.className = 'action-btn action-btn-leaderboard'
+leaderboardBtn.textContent = 'Pistelista'
+leaderboardBtn.setAttribute('aria-label', 'Näytä pistelista')
+
+actionButtons.append(startBtn, restartBtn, leaderboardBtn)
 
 const controlsFooter = document.createElement('div')
 controlsFooter.className = 'controls-footer'
 controlsFooter.textContent =
   'Arrows / WASD · I: AI demo · Space: Pause · R: Restart · Enter: Start'
 
-shell.append(hud, deviceFrame)
-app.append(shell, controlsFooter)
+const leaderboardView = document.createElement('div')
+leaderboardView.className = 'leaderboard-view'
+leaderboardView.setAttribute('aria-label', 'Pistelista')
+const leaderboardTitle = document.createElement('h2')
+leaderboardTitle.className = 'leaderboard-title'
+leaderboardTitle.textContent = 'Top 10'
+const leaderboardList = document.createElement('ol')
+leaderboardList.className = 'leaderboard-list'
+const leaderboardBackBtn = document.createElement('button')
+leaderboardBackBtn.type = 'button'
+leaderboardBackBtn.className = 'action-btn action-btn-back'
+leaderboardBackBtn.textContent = 'Takaisin'
+leaderboardBackBtn.setAttribute('aria-label', 'Takaisin peliin')
+leaderboardView.append(leaderboardTitle, leaderboardList, leaderboardBackBtn)
+
+const nameFormContainer = document.createElement('div')
+nameFormContainer.className = 'name-form-container'
+nameFormContainer.setAttribute('aria-label', 'Syötä nimesi pistelistaan')
+const nameFormLabel = document.createElement('label')
+nameFormLabel.className = 'name-form-label'
+nameFormLabel.textContent = 'Syötä nimesi'
+const nameFormInput = document.createElement('input')
+nameFormInput.type = 'text'
+nameFormInput.className = 'name-form-input'
+nameFormInput.placeholder = 'Nimi'
+nameFormInput.setAttribute('maxlength', '20')
+nameFormInput.setAttribute('aria-label', 'Nimesi pistelistaan')
+const nameFormSubmit = document.createElement('button')
+nameFormSubmit.type = 'button'
+nameFormSubmit.className = 'action-btn name-form-submit'
+nameFormSubmit.textContent = 'Tallenna'
+nameFormContainer.append(nameFormLabel, nameFormInput, nameFormSubmit)
+
+shell.append(hud, deviceFrame, nameFormContainer)
+shell.appendChild(actionButtons)
+app.append(shell, leaderboardView, controlsFooter)
+
+type AppView = 'game' | 'leaderboard'
+let appView: AppView = 'game'
+let nameSavedForThisGame = false
+
+function updateLeaderboardList(): void {
+  leaderboardList.innerHTML = ''
+  const list = getLeaderboard()
+  if (list.length === 0) {
+    const empty = document.createElement('li')
+    empty.className = 'leaderboard-empty'
+    empty.textContent = 'Ei vielä tuloksia.'
+    leaderboardList.appendChild(empty)
+    return
+  }
+  for (let i = 0; i < list.length; i++) {
+    const li = document.createElement('li')
+    li.className = 'leaderboard-item'
+    li.textContent = `${i + 1}. ${list[i].name} — ${list[i].score}`
+    leaderboardList.appendChild(li)
+  }
+}
 
 const ctx = canvas.getContext('2d')!
 
@@ -155,6 +224,21 @@ function loop(now: number): void {
   startBtn.textContent = state.mode === 'gameover' ? 'Play again' : 'Start'
   startBtn.style.display = showStart ? '' : 'none'
   restartBtn.style.display = showRestart ? '' : 'none'
+  leaderboardBtn.style.display = state.mode === 'start' ? '' : 'none'
+
+  if (appView === 'leaderboard') {
+    shell.style.display = 'none'
+    leaderboardView.classList.add('leaderboard-view-visible')
+    updateLeaderboardList()
+  } else {
+    shell.style.display = ''
+    leaderboardView.classList.remove('leaderboard-view-visible')
+  }
+
+  const showNameForm =
+    state.mode === 'gameover' && !nameSavedForThisGame && appView === 'game'
+  nameFormContainer.style.display = showNameForm ? '' : 'none'
+  nameFormContainer.classList.toggle('name-form-visible', showNameForm)
 
   if (state.mode === 'gameover' && lastMode !== 'gameover') {
     setHighScore(state.highScore)
@@ -166,16 +250,35 @@ function loop(now: number): void {
 
 requestAnimationFrame(loop)
 
+leaderboardBtn.addEventListener('click', () => {
+  appView = 'leaderboard'
+})
+leaderboardBackBtn.addEventListener('click', () => {
+  appView = 'game'
+})
+function submitNameToLeaderboard(): void {
+  addLeaderboardEntry(nameFormInput.value.trim() || 'Anonyymi', state.score)
+  nameSavedForThisGame = true
+  nameFormInput.value = ''
+}
+
+nameFormSubmit.addEventListener('click', submitNameToLeaderboard)
+nameFormInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') submitNameToLeaderboard()
+})
+
 attachInputHandlers(shell, {
   onDirection(dir) {
     state = setQueuedDirection(state, dir)
   },
   onStart() {
     if (state.mode === 'start' || state.mode === 'gameover') {
+      nameSavedForThisGame = false
       state = startGame(state)
     }
   },
   onRestart() {
+    nameSavedForThisGame = false
     state = startGame(state)
   },
   onPause() {
@@ -194,9 +297,11 @@ shell.appendChild(actionButtons)
 
 startBtn.addEventListener('click', () => {
   if (state.mode === 'start' || state.mode === 'gameover') {
+    nameSavedForThisGame = false
     state = startGame(state)
   }
 })
 restartBtn.addEventListener('click', () => {
+  nameSavedForThisGame = false
   state = startGame(state)
 })
