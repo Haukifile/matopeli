@@ -43,7 +43,7 @@ AI demo mode is **algorithmic (not machine learning)**. When toggled on with **I
 
 ## Pistelista (leaderboard)
 
-When the game ends (game over), you can enter your name and save your score to the leaderboard. The top 10 entries (name + score) are stored in `localStorage` and shown in a dedicated view. On the **start screen**, use the **Pistelista** button to open the top 10 list; use **Takaisin** (Back) to return to the game. The name is asked only once per game (if you click "Play again" without reloading, the form is not shown again for that session).
+When the game ends (game over), you can enter your name and save your score to the leaderboard. The top 10 entries (name + score) are stored in `localStorage` and shown in a dedicated view. The **Pistelista** button is always visible below the canvas; click it to open the top 10 list; use **Takaisin** (Back) to return to the game. The name is asked only once per game (if you click "Play again" without reloading, the form is not shown again for that session).
 
 ## DEPLOYMENT
 
@@ -69,6 +69,7 @@ Output folder: `dist`
 
 ## CHANGELOG
 
+- **Pistelista button always visible**: The Pistelista button now shows in all game modes (start, playing, paused, game over) so you can view the score list at any time.
 - **AI button (MAT-2)**: HUD button to toggle AI demo on/off; visible only when playing or paused; works with touch and key I. Button shows "AI: päällä" / "AI: pois". If AI was used during a game, high score and leaderboard are not updated for that game (name form hidden on game over).
 - **Pistelista (leaderboard)**: After game over you can enter your name and save your score. Top 10 list is stored in `localStorage`. Start screen has a "Pistelista" button to view the list; leaderboard view has a "Takaisin" button to return. Nokia/retro styling for the list and name form.
 - **Väriteema (theme toggle)**: Nokia (default) and OP Pohjola colour schemes. Theme button in the HUD toggles between them; selection is stored in `localStorage`.

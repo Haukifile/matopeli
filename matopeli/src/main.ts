@@ -243,7 +243,7 @@ function loop(now: number): void {
   startBtn.textContent = state.mode === 'gameover' ? 'Play again' : 'Start'
   startBtn.style.display = showStart ? '' : 'none'
   restartBtn.style.display = showRestart ? '' : 'none'
-  leaderboardBtn.style.display = state.mode === 'start' ? '' : 'none'
+  leaderboardBtn.style.display = '' // Always visible — view pistelista anytime
 
   if (appView === 'leaderboard') {
     shell.style.display = 'none'
