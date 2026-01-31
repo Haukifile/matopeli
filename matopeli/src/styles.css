@@ -1,0 +1,132 @@
+/* Nokia-style retro LCD look — monochrome greenish, thick border */
+
+:root {
+  --lcd-dark: #0f380f;
+  --lcd-mid: #306230;
+  --lcd-light: #9bbc0f;
+  --lcd-pale: #8bac0f;
+  --bezel: #1a2f1a;
+  font-family: "Courier New", Courier, monospace;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--lcd-dark);
+  color: var(--lcd-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.game-shell {
+  background-color: var(--lcd-mid);
+  border: 16px solid var(--bezel);
+  border-radius: 8px;
+  padding: 12px;
+  max-width: min(90vmin, 520px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  width: 100%;
+  font-size: 0.9rem;
+  color: var(--lcd-dark);
+  font-weight: 600;
+}
+
+.hud .score,
+.hud .high {
+  color: var(--lcd-dark);
+}
+
+.hud .instructions {
+  width: 100%;
+  font-size: 0.75rem;
+  color: var(--lcd-dark);
+  opacity: 0.9;
+  text-align: center;
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  max-width: min(90vmin, 480px);
+  height: auto;
+  aspect-ratio: 1;
+  background-color: var(--lcd-pale);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* On-screen D-pad (mobile) — 3x3 grid with center empty */
+.dpad-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 6px;
+  max-width: min(90vmin, 180px);
+  margin-top: 4px;
+}
+
+.dpad-btn {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.25rem;
+  font-family: inherit;
+  color: var(--lcd-dark);
+  background-color: var(--lcd-pale);
+  border: 3px solid var(--bezel);
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dpad-btn:hover {
+  background-color: var(--lcd-light);
+}
+
+.dpad-btn:active {
+  background-color: var(--lcd-mid);
+}
+
+.dpad-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.dpad-down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.dpad-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dpad-right {
+  grid-column: 3;
+  grid-row: 2;
+}

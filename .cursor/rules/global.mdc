@@ -1,0 +1,25 @@
+---
+description: Global rules for the matopeli (snake) demo
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+You are coding a Nokia-style Snake ("matopeli") web game.
+
+Hard constraints:
+- Browser-playable, single-page static app.
+- Use HTML Canvas for rendering (no frameworks).
+- TypeScript, strict types. No `any` unless unavoidable (then justify in a comment).
+- No external runtime dependencies (dev deps like Vite/TS are fine).
+- Keep modules small and cohesive. Prefer pure functions for game logic.
+- Deterministic tick-based movement (fixed timestep), not physics-based.
+- Keyboard controls: Arrow keys + WASD. No reverse-direction instantly.
+- Mobile-friendly: add simple on-screen D-pad OR swipe input.
+- Provide: start screen, pause (Space), restart (R), score + high score (localStorage).
+- Clean UI styled like old Nokia/retro LCD (monochrome/greenish).
+
+Working style:
+- When implementing a feature, update README with how to use it.
+- When you change behavior, add a short note in a CHANGELOG section in README.
+- If something is ambiguous, choose a sensible default and document it (do not ask questions).
